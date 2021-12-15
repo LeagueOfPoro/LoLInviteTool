@@ -4,12 +4,14 @@ from lcu_driver import Connector
 import random 
 
 NAME_FILE_PATH = "D:/Projects/StreamInvite/names.txt"
+NUM_INVITES = 4
 
 connector = Connector()
 
 async def inviteSummoners(connection, ids):
     data = [{"toSummonerId" : str(id)} for id in ids]
     res = await connection.request('post', '/lol-lobby/v2/lobby/invitations', data=data)
+    print(ids)
     if res.status == 404:
         print("Are you in a lobby?")
     elif res.status == 200:
@@ -43,7 +45,7 @@ async def connect(connection):
         print('Please login into your account.')
     else:
         ids = await getSummonerIds(connection, None)
-        toInvite = set(random.choices(tuple(ids), k=4))
+        toInvite = set(random.choices(list(ids), k=NUM_INVITES))
         await inviteSummoners(connection, toInvite)
 
 
